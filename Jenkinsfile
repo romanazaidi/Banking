@@ -18,14 +18,14 @@ node{
     stage('git code checkout'){
         try{
             echo 'checkout the code from git repository'
-            git 'https://github.com/StaragileDevops/insuredemo.git'
+            git 'https://github.com/romanazaidi/Banking.git'
         }
         catch(Exception e){
             echo 'Exception occured in Git Code Checkout Stage'
             currentBuild.result = "FAILURE"
             emailext body: '''Dear All,
             The Jenkins job ${JOB_NAME} has been failed. Request you to please have a look at it immediately by clicking on the below link. 
-            ${BUILD_URL}''', subject: 'Job ${JOB_NAME} ${BUILD_NUMBER} is failed', to: 'dev@gmail.com'
+            ${BUILD_URL}''', subject: 'Job ${JOB_NAME} ${BUILD_NUMBER} is failed', to: 'usertest@gmail.com'
         }
     }
     
@@ -41,14 +41,14 @@ node{
     
     stage('Containerize the application'){
         echo 'Creating Docker image'
-        sh "${dockerCMD} build -t staragiledevops/insdemo:${tagName} ."
+        sh "${dockerCMD} build -t romanazaidi/banking:${tagName} ."
     }
     
     stage('Pushing it ot the DockerHub'){
         echo 'Pushing the docker image to DockerHub'
         withCredentials([string(credentialsId: 'dockPassword', variable: 'dockpaswd')]) {
-        sh "${dockerCMD} login -u staragiledevops -p ${dockpaswd}"
-        sh "${dockerCMD} push staragiledevops/insdemo:${tagName}"
+        sh "${dockerCMD} login -u romanazaidi -p ${dockpaswd}"
+        sh "${dockerCMD} push romanazaidi/banking:${tagName}"
         }    
         }
         
